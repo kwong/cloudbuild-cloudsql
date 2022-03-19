@@ -7,10 +7,25 @@ steps:
       echo "~*~*~*~*~*~*~"
       echo "Branch=$BRANCH_NAME"
       echo "~*~*~*~*~*~*~"
-- id: "connect to db test"
-  name: "postgres"
-  entrypoint: "sh"
+- id: proxy-install
+  name: alpine:3.10
+  entrypoint: sh
   args:
-  - -c
-  - |
-    echo "hello world"
+    - -c
+    - 'wget -O /workspace/cloud_sql_proxy https://storage.googleapis.com/cloudsql-proxy/v1.16/cloud_sql_proxy.linux.386 &&  chmod +x /workspace/cloud_sql_proxy'
+  waitFor: ['-']
+
+- id: dbconnect
+  name: "python:3.7"
+  waitFor: ["-"]
+  entrypoint: sh
+  args:
+  - "-c"
+  - "(/workspace/cloud_sql_proxy -dir=/workspace -instances=${PROJECT_ID}:${LOCATION}:${_CLOUDSQL_INSTANCE_NAME}=tcp:${_DB_PORT} & sleep 2) && pip install -r db-app/requirements.txt && python db-app/main.py"
+  waitFor: ['proxy-install']
+  env:
+  - 'DB_HOST=$_DB_HOST'
+  - 'DB_USER=$_DB_USER'
+  - 'DB_PASS=$_DB_PASS'
+  - 'DB_PORT=$_DB_PORT'
+  - 'DB_NAME=$_DB_NAME'

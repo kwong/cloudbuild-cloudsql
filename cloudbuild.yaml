@@ -1,0 +1,16 @@
+steps:
+- id: 'branch'
+  name: 'bash'
+  args:
+  - -c
+  - |
+      echo "~*~*~*~*~*~*~"
+      echo "Branch=$BRANCH_NAME"
+      echo "~*~*~*~*~*~*~"
+- id: "connect to db test"
+  name: "postgres"
+  entrypoint: "sh"
+  args:
+  - -c
+  - |
+    echo "hello world"

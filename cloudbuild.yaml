@@ -17,7 +17,6 @@ steps:
 
 - id: dbconnect
   name: "python:3.7"
-  waitFor: ["-"]
   entrypoint: sh
   args:
   - "-c"

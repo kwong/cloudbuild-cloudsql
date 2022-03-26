@@ -19,8 +19,10 @@ steps:
   name: "python:3.7"
   entrypoint: sh
   args:
-  - "-c"
-  - "(/workspace/cloud_sql_proxy -dir=/workspace -instances=${PROJECT_ID}:${LOCATION}:${_CLOUDSQL_INSTANCE_NAME}=tcp:${_DB_PORT} & sleep 2) && pip install -r db-app/requirements.txt && python db-app/main.py"
+    - "-c"
+    - "(/workspace/cloud_sql_proxy -dir=/workspace -instances=${PROJECT_ID}:${LOCATION}:${_CLOUDSQL_INSTANCE_NAME}=tcp:${_DB_PORT} & sleep 2) \
+        && pip install -r db-app/requirements.txt \
+        && python db-app/main.py"
   waitFor: ['proxy-install']
   env:
   - 'DB_HOST=$_DB_HOST'
